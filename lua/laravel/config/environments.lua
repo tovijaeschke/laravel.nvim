@@ -32,6 +32,7 @@ return {
               default = "app",
             },
             exec = { "docker", "compose", "exec", "-it" },
+            run = { "docker", "compose", "run" },
           },
         },
       },
@@ -40,6 +41,7 @@ return {
       name = "local",
       condition = {
         executable = { "php" },
+        file_exists = { "artisan" },
       },
     },
   },

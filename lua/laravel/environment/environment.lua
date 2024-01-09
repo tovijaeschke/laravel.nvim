@@ -1,3 +1,4 @@
+local Job = require "plenary.job"
 local get_env = require("laravel.utils").get_env
 
 ---@class Environment
@@ -38,6 +39,45 @@ function Environment:check()
   for _, exec in pairs(self.condition.executable or {}) do
     if vim.fn.executable(exec) == 0 then
       return false
+    end
+  end
+
+  if self.name ~= "docker-compose" then
+    return true
+  end
+
+  for _, value in pairs(self.commands) do
+    -- is on the list have to process it
+    if value.docker then
+      -- is set to run from docker
+      if not value.docker.container then
+        return false
+      end
+
+      local container = value.docker.container.default
+      if value.docker.container.env and get_env(value.docker.container.env) then
+        container = get_env(value.docker.container.env)
+      end
+
+      if not container then
+        return false
+      end
+
+      if not value.docker.run then
+        return false
+      end
+
+      local cmd = vim.fn.extend(value.docker.run, { container, "php", "artisan" })
+      local command = table.remove(cmd, 1)
+
+      local _, ret = Job:new({
+        command = command,
+        args = cmd,
+      }):sync()
+
+      if ret ~= 0 then
+        return false
+      end
     end
   end
 

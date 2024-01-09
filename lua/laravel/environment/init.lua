@@ -16,7 +16,7 @@ local function find_env_by_name(name, envs)
   end
   for _, env in ipairs(envs) do
     if env.name == name then
-      return env
+      return Environment:new(env)
     end
   end
 
@@ -29,7 +29,7 @@ local function resolve()
 
   if opts.env_variable then
     local env = find_env_by_name(get_env(opts.env_variable), opts.definitions)
-    if env then
+    if env and env:check() then
       return env
     end
   end
@@ -45,7 +45,7 @@ local function resolve()
 
   if opts.default then
     local env = find_env_by_name(opts.default, opts.definitions)
-    if env then
+    if env and env:check() then
       return env
     end
   end
@@ -55,9 +55,6 @@ end
 
 function M.setup()
   M.environment = nil
-  if vim.fn.filereadable "artisan" == 0 then
-    return
-  end
 
   M.environment = resolve()
 
