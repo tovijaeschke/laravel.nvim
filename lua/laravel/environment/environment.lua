@@ -63,10 +63,6 @@ function Environment:check()
         return false
       end
 
-      if not value.docker.run then
-        return false
-      end
-
       local cmd = vim.fn.extend(value.docker.exec, { container, "php", "artisan" })
       local command = table.remove(cmd, 1)
 
