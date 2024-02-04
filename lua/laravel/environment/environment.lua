@@ -67,7 +67,7 @@ function Environment:check()
         return false
       end
 
-      local cmd = vim.fn.extend(value.docker.run, { container, "php", "artisan" })
+      local cmd = vim.fn.extend(value.docker.exec, { container, "php", "artisan" })
       local command = table.remove(cmd, 1)
 
       local _, ret = Job:new({

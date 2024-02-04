@@ -32,7 +32,6 @@ return {
               default = "app",
             },
             exec = { "docker", "compose", "exec", "-it" },
-            run = { "docker", "compose", "run" },
           },
         },
       },
